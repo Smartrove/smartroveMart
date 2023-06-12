@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import styles from "./header.module.scss";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Badge from "@mui/material/Badge";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/config";
+import { ToastContainer, toast } from "react-toastify";
 
 const headerLogo = (
   <div className={styles.logo}>
@@ -31,6 +34,16 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+      } else {
+        toast.warning(error.code);
+      }
+    });
+  }, []);
   const toggleMenuBar = () => {
     setShowMenu(!showMenu);
   };
@@ -38,8 +51,21 @@ const Header = () => {
   const hideMenuBar = () => {
     setShowMenu(false);
   };
+  const navigate = useNavigate();
+  const logoutUser = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("logout successful");
+        navigate("/login");
+      })
+      .catch((error) => {
+        error.code = "unable to logout";
+        toast.error(error.code);
+      });
+  };
   return (
     <>
+      <ToastContainer />
       <header>
         <div className={styles.header}>
           {headerLogo}
@@ -86,6 +112,9 @@ const Header = () => {
                 </NavLink>
                 <NavLink to="/order-history" className={activeLink}>
                   My Orders
+                </NavLink>
+                <NavLink to="/" onClick={logoutUser}>
+                  Logout
                 </NavLink>
               </span>
               {cart}
