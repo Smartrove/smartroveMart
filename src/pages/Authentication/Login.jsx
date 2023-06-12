@@ -45,9 +45,14 @@ const Login = () => {
     setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        toast.success("sign in successful");
         const user = userCredential.user;
-        console.log(user);
+        if (user.emailVerified === false) {
+          toast.warning("please verify your email address");
+          setIsLoading(false);
+          return;
+        }
+        toast.success("sign in successful");
+        // console.log(user);
         setIsLoading(false);
 
         navigate("/");

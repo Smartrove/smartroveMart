@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./header.module.scss";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Badge from "@mui/material/Badge";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { signOut } from "firebase/auth";
+import PersonIcon from "@mui/icons-material/Person";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -34,13 +35,16 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log(user);
         const uid = user.uid;
+        setDisplayName(user.displayName);
       } else {
-        toast.warning(error.code);
+        setDisplayName("");
       }
     });
   }, []);
@@ -107,6 +111,11 @@ const Header = () => {
                 <NavLink to="/login" className={activeLink}>
                   Login
                 </NavLink>
+
+                <a href="#">
+                  <PersonIcon style={{ fontSize: "20px" }} />
+                  Hi, {displayName}
+                </a>
                 <NavLink to="/register" className={activeLink}>
                   Register
                 </NavLink>
