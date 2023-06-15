@@ -28,7 +28,6 @@ const Login = () => {
       return false;
     }
 
-    // "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
       notify("Email is not valid");
       return false;
@@ -52,7 +51,6 @@ const Login = () => {
           return;
         }
         toast.success("sign in successful");
-        // console.log(user);
         setIsLoading(false);
 
         navigate("/");
