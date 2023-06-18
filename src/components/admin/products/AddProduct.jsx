@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./product.module.scss";
 import Card from "../../card/Card";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -30,6 +30,7 @@ const AddProduct = () => {
   const [progressBar, setProgressBar] = useState(0);
   const [url, setUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,23 +40,21 @@ const AddProduct = () => {
   };
 
   //upload image to firebase bucket
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     var file = e.target?.files[0];
     setSelectedImage(file);
   };
 
-  const addNewProduct = (e) => {
+  const addNewProduct = async (e) => {
     e.preventDefault();
 
-    setIsLoading(true);
+    const storageRef = ref(
+      storage,
+      `/smartroveMart/${Date.now()}_${selectedImage?.name}`
+    );
 
     try {
-      const storageRef = ref(
-        storage,
-        `/smartroveMart/${Date.now()}_${selectedImage?.name}`
-      );
       const uploadTask = uploadBytesResumable(storageRef, selectedImage);
-
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -68,44 +67,47 @@ const AddProduct = () => {
           // Handle unsuccessful uploads
           toast.error(error.code);
         },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setProduct({ ...product, imageUrl: downloadURL });
-            setUrl(downloadURL);
-            console.log("downloadURL data", downloadURL);
 
-            toast.success("image uploaded successfully");
-            setProduct("");
-          });
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              setProduct({ ...product, imageUrl: downloadURL });
+              setUploadComplete(true);
+              toast.success("image uploaded successfully");
+            })
+            .catch((error) => {
+              toast.error(error.code);
+            });
         }
       );
-    } catch (err) {
-      toast.error(err.code);
+    } catch (error) {
+      toast.error(error.code);
     }
+  };
 
-    // console.log(product);
-
+  const addProductToCollection = async () => {
     try {
-      const docRef = addDoc(collection(db, "products"), {
+      const docRef = await addDoc(collection(db, "products"), {
         name: product.name,
-        imageUrl: progressBar === 100 && product.imageUrl,
+        imageUrl: product.imageUrl,
         price: product.price,
         category: product.category,
         brand: product.brand,
         desc: product.desc,
         createAt: Timestamp.now().toDate(),
       });
-
-      setIsLoading(false);
-      setProgressBar(0);
-      setProduct({ ...initialState });
-      toast.success("product updated successfully");
-      navigate("/admin/all-products");
-    } catch (err) {
-      toast.error(err.message);
-      setIsLoading(false);
+    } catch (error) {
+      toast.error(error.code);
     }
   };
+
+  useEffect(() => {
+    if (uploadComplete) {
+      addProductToCollection();
+      toast.success("product updated successfully");
+      navigate("/admin/all-products");
+    }
+  }, [uploadComplete]);
   return (
     <>
       {isLoading && <Loader />}
@@ -148,7 +150,7 @@ const AddProduct = () => {
                 <input
                   type="text"
                   name="imageUrl"
-                  defaultValue={url}
+                  defaultValue={product.imageUrl}
                   disabled
                   // required
                 />
