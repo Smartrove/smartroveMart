@@ -1,8 +1,9 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Header, Footer } from "./components";
-import { Home, Contact, Login, Register, ResetPassword } from "./pages";
+import { Home, Contact, Login, Register, ResetPassword, Admin } from "./pages";
 import { ToastContainer } from "react-toastify";
+import {AdminOnlyRoute} from "./components/adminOnlyRoute/AdminOnlyRoute";
 
 const App = () => {
   return (
@@ -15,6 +16,9 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/admin/*" element={<AdminOnlyRoute>
+          <Admin/>
+        </AdminOnlyRoute>} />
       </Routes>
       <Footer />
     </>

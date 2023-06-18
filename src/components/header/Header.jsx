@@ -14,8 +14,8 @@ import {
   setActiveUser,
   removeActiveUser,
 } from "../../redux/features/authSlice";
-import ShowOnLogin from "../hiddenLinks/hiddenLink";
-import ShowOnLogOut from "../hiddenLinks/hiddenLink";
+import { AdminOnlyLink} from "../adminOnlyRoute/AdminOnlyRoute";
+import { ShowOnLogin, ShowOnLogOut} from "../hiddenLinks/hiddenLink";
 
 const headerLogo = (
   <div className={styles.logo}>
@@ -90,7 +90,7 @@ const Header = () => {
         );
       } else {
         setDisplayName("");
-        dispatchEvent(removeActiveUser());
+        dispatch(removeActiveUser());
       }
     });
   }, [dispatch]);
@@ -142,6 +142,13 @@ const Header = () => {
                 />
               </li>
               <li>
+                <AdminOnlyLink>
+                  <Link to='/admin/home'>
+                  <button className="--btn --btn-primary">Admin</button>
+                  </Link>
+                </AdminOnlyLink>
+              </li>
+              <li>
                 <NavLink to="/" className={activeLink}>
                   Home
                 </NavLink>
@@ -154,42 +161,53 @@ const Header = () => {
             </ul>
             <div className={styles["header-right"]} onClick={hideMenuBar}>
               <span className={styles.links}>
-                {showGreetings ? null : (
+                {/* {showGreetings ? null : (
                   <NavLink to="/login" className={activeLink}>
                     Login
                   </NavLink>
-                )}
-                {/* <ShowOnLogOut>
+                )} */}
+                <ShowOnLogOut>
                   <NavLink to="/login" className={activeLink}>
                     Login
                   </NavLink>
-                </ShowOnLogOut> */}
+                </ShowOnLogOut>
 
-                {showGreetings ? (
+                {/* {showGreetings ? (
                   <NavLink to="/order-history" className={activeLink}>
                     My Orders
                   </NavLink>
-                ) : null}
-                {showGreetings ? (
+                ) : null} */}
+                {/* {showGreetings ? (
                   <NavLink to="/" onClick={logoutUser}>
                     Logout
                   </NavLink>
-                ) : null}
-                {/* <ShowOnLogin>
+                ) : null} */}
+                <ShowOnLogin>
+                  <NavLink to="/order-history" className={activeLink}>
+                    My Orders
+                  </NavLink>
+                </ShowOnLogin>
+                <ShowOnLogin>
                   <NavLink to="/" onClick={logoutUser}>
                     Logout
                   </NavLink>
-                </ShowOnLogin> */}
+                </ShowOnLogin>
               </span>
               {cart}
             </div>
             <div>
-              {showGreetings ? (
+              {/* {showGreetings ? (
                 <a href="#" style={{ color: "#ff7722" }}>
                   {greeting}, {displayName}{" "}
                   <WavingHandIcon style={{ fontSize: "30px" }} />
                 </a>
-              ) : null}
+              ) : null} */}
+              <ShowOnLogin>
+                <a href="#" style={{ color: "#ff7722" }}>
+                  {greeting}, {displayName}{" "}
+                  <WavingHandIcon style={{ fontSize: "30px" }} />
+                </a>
+                </ShowOnLogin>
             </div>
           </nav>
           <div className={styles["menu-icon"]} onClick={toggleMenuBar}>

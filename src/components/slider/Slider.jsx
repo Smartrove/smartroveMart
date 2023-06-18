@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./slider.scss";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -8,12 +8,34 @@ const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderLength = sliderData.length;
 
+  const autoScroll = true;
+  let slideInterval;
+  let intervalTime = 5000;
+
   const nextSlide = () => {
     setCurrentSlide(currentSlide === sliderLength - 1 ? 0 : currentSlide + 1);
   };
   const prevSlide = () => {
     setCurrentSlide(currentSlide === 0 ? sliderLength - 1 : currentSlide - 1);
   };
+
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, []);
+
+  useEffect(() => {
+    if (autoScroll) {
+      function automaticScrolling() {
+        slideInterval = setInterval(nextSlide, intervalTime);
+      }
+      automaticScrolling();
+    }
+
+    return () => {
+      clearInterval(slideInterval);
+    };
+  }, [currentSlide, autoScroll, slideInterval]);
+
   return (
     <div className="slider">
       <KeyboardDoubleArrowLeftIcon
