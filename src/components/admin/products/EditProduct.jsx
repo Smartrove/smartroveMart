@@ -6,7 +6,7 @@ import { storage, db } from "../../../firebase/config";
 import { toast } from "react-toastify";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import Loader from "../../loader/Loader";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const categories = [
@@ -24,7 +24,7 @@ const initialState = {
   brand: "",
   desc: "",
 };
-const AddProduct = () => {
+const EditProduct = () => {
   const { id } = useParams();
 
   const { products } = useSelector((store) => store["product"]);
@@ -32,10 +32,8 @@ const AddProduct = () => {
   const productEdit = products.filter((item) => item.id === id);
   // console.log(productEdit, typeof productEdit);
 
-  const [product, setProduct] = useState(() => {
-    const newState = detectForm(id, { ...initialState }, productEdit);
-
-    return newState;
+  const [product, setProduct] = useState({
+    ...initialState,
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [progressBar, setProgressBar] = useState(0);
@@ -43,13 +41,8 @@ const AddProduct = () => {
   const [uploadComplete, setUploadComplete] = useState(false);
 
   const navigate = useNavigate();
-
-  function detectForm(id, functionOne, functionTwo) {
-    if (id === "add") {
-      return functionOne;
-    }
-    return functionTwo;
-  }
+  const { state } = useLocation();
+  // console.log(state);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -139,15 +132,15 @@ const AddProduct = () => {
     <>
       {isLoading && <Loader />}
       <div className={styles.product}>
-        <h2>{detectForm(id, "Add New Product", "Edit Product")}</h2>
+        <h2>Edit Product</h2>
         <Card cardClass={styles.card}>
-          <form onSubmit={detectForm(id, addNewProduct, updateProduct)}>
+          <form onSubmit={updateProduct}>
             <label htmlFor="">Product Name:</label>
             <input
               type="text"
               placeholder="product name"
               name="name"
-              defaultValue={product.name}
+              defaultValue={state.data.name}
               onChange={(e) => handleInputChange(e)}
               required
             />
@@ -177,7 +170,7 @@ const AddProduct = () => {
                 <input
                   type="text"
                   name="imageUrl"
-                  defaultValue={product.imageUrl}
+                  defaultValue={state.data.imageUrl}
                   disabled
                   // required
                 />
@@ -188,7 +181,7 @@ const AddProduct = () => {
               type="text"
               placeholder="product price"
               name="price"
-              defaultValue={product.price}
+              defaultValue={state.data.price}
               onChange={(e) => handleInputChange(e)}
               required
             />
@@ -196,7 +189,7 @@ const AddProduct = () => {
             <select
               name="category"
               id="category"
-              defaultValue={product.category}
+              defaultValue={state.data.category}
               required
               onChange={(e) => handleInputChange(e)}
             >
@@ -218,7 +211,7 @@ const AddProduct = () => {
               type="text"
               placeholder="product brand"
               name="brand"
-              defaultValue={product.brand}
+              defaultValue={state.data.brand}
               onChange={(e) => handleInputChange(e)}
               required
             />
@@ -230,11 +223,9 @@ const AddProduct = () => {
               id=""
               cols="30"
               rows="10"
-              defaultValue={product.desc}
+              defaultValue={state.data.desc}
             ></textarea>
-            <button className="--btn --btn-primary">
-              {detectForm(id, "save product", "edit product")}
-            </button>
+            <button className="--btn --btn-primary">edit product</button>
           </form>
         </Card>
       </div>
@@ -242,4 +233,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

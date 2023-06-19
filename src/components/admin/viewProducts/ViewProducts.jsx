@@ -3,17 +3,23 @@ import styles from "./viewProducts.module.scss";
 import { toast } from "react-toastify";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db, storage } from "../../../firebase/config";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, createSearchParams } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Loader from "../../loader/Loader";
 import { deleteObject, ref } from "firebase/storage";
+import { useDispatch } from "react-redux";
 
 import Notiflix from "notiflix";
+import { storeProducts } from "../../../redux/features/productSlice";
 
 const ViewProducts = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const confirmDeleteProduct = (id, imageUrl) => {
     Notiflix.Confirm.show(
@@ -28,7 +34,8 @@ const ViewProducts = () => {
         toast.success("delete cancelled");
       },
       {
-        width: "320px",
+        width: "500px",
+        svgSize: "500px",
         borderRadius: "8px",
         titleColor: "orangered ",
         okButtonBackground: "orangered ",
@@ -37,6 +44,7 @@ const ViewProducts = () => {
       }
     );
   };
+
   const deleteProduct = async (id, imageUrl) => {
     try {
       setIsLoading(true);
@@ -56,6 +64,7 @@ const ViewProducts = () => {
 
   useEffect(() => {
     const getProducts = async () => {
+      setIsLoading(true);
       try {
         const collectionRef = collection(db, "products");
         const snapshot = await getDocs(collectionRef);
@@ -67,13 +76,21 @@ const ViewProducts = () => {
         }));
 
         setProducts(allProducts);
+        dispatch(
+          storeProducts({
+            products: allProducts,
+          })
+        );
+        setIsLoading(false);
       } catch (error) {
-        console.log("Error retrieving data:", error);
+        toast.error(error.code);
+        setIsLoading(false);
       }
     };
 
     getProducts();
   }, []);
+
   return (
     <>
       {isLoading && <Loader />}
@@ -112,9 +129,13 @@ const ViewProducts = () => {
                       <td>{category}</td>
                       <td>{`$${price}`}</td>
                       <td className={styles.icons}>
-                        <Link to="/admin/add-product">
+                        <Link
+                          to="/admin/edit-product"
+                          state={{ data: product }}
+                        >
                           <EditIcon
                             style={{ fontSize: "28px", color: "green" }}
+                            // onClick={() => console.log(product)}
                           />
                         </Link>
                         &nbsp;
