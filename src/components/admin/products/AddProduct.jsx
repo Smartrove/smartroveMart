@@ -62,15 +62,6 @@ const AddProduct = () => {
     setSelectedImage(file);
   };
 
-  const updateProduct = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-    } catch (error) {
-      toast.error(error.code);
-    }
-  };
 
   const addNewProduct = async (e) => {
     e.preventDefault();
@@ -141,7 +132,7 @@ const AddProduct = () => {
       <div className={styles.product}>
         <h2>{detectForm(id, "Add New Product", "Edit Product")}</h2>
         <Card cardClass={styles.card}>
-          <form onSubmit={detectForm(id, addNewProduct, updateProduct)}>
+          <form onSubmit={addNewProduct}>
             <label htmlFor="">Product Name:</label>
             <input
               type="text"

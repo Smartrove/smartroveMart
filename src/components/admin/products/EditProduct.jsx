@@ -1,10 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./product.module.scss";
 import Card from "../../card/Card";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { storage, db } from "../../../firebase/config";
 import { toast } from "react-toastify";
-import { Timestamp, addDoc, collection } from "firebase/firestore";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  setDoc,
+} from "firebase/firestore";
 import Loader from "../../loader/Loader";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -41,8 +53,16 @@ const EditProduct = () => {
   const [uploadComplete, setUploadComplete] = useState(false);
 
   const navigate = useNavigate();
+
   const { state } = useLocation();
-  // console.log(state);
+  // console.log(state.data.imageUrl);
+
+  const nameRef = useRef();
+  const priceRef = useRef();
+  const brandRef = useRef();
+  const categoryRef = useRef();
+  const descRef = useRef();
+  const imageUrlRef = useRef();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -56,16 +76,6 @@ const EditProduct = () => {
   };
 
   const updateProduct = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-    } catch (error) {
-      toast.error(error.code);
-    }
-  };
-
-  const addNewProduct = async (e) => {
     e.preventDefault();
 
     const storageRef = ref(
@@ -107,15 +117,22 @@ const EditProduct = () => {
 
   const addProductToCollection = async () => {
     try {
-      const docRef = await addDoc(collection(db, "products"), {
-        name: product.name,
-        imageUrl: product.imageUrl,
-        price: product.price,
-        category: product.category,
-        brand: product.brand,
-        desc: product.desc,
-        createAt: Timestamp.now().toDate(),
+      // if (product.imageUrl !== state.data.imageUrl) {
+      //   const storageRef = ref(storage, state.data.imageUrl);
+
+      //   await deleteObject(storageRef);
+      // }
+      const docRef = await setDoc(doc(db, "products", state.data.id), {
+        name: nameRef.current.value,
+        imageUrl: imageUrlRef.current.value,
+        price: priceRef.current.value,
+        category: categoryRef.current.value,
+        brand: brandRef.current.value,
+        desc: descRef.current.value,
+        createAt: state.data.createAt,
+        editedAt: Timestamp.now().toDate(),
       });
+      console.log(state.data.id);
     } catch (error) {
       toast.error(error.code);
     }
@@ -140,6 +157,7 @@ const EditProduct = () => {
               type="text"
               placeholder="product name"
               name="name"
+              ref={nameRef}
               defaultValue={state.data.name}
               onChange={(e) => handleInputChange(e)}
               required
@@ -170,7 +188,8 @@ const EditProduct = () => {
                 <input
                   type="text"
                   name="imageUrl"
-                  defaultValue={state.data.imageUrl}
+                  ref={imageUrlRef}
+                  defaultValue={product.imageUrl}
                   disabled
                   // required
                 />
@@ -181,6 +200,7 @@ const EditProduct = () => {
               type="text"
               placeholder="product price"
               name="price"
+              ref={priceRef}
               defaultValue={state.data.price}
               onChange={(e) => handleInputChange(e)}
               required
@@ -188,6 +208,7 @@ const EditProduct = () => {
             <label htmlFor="">Product Category:</label>
             <select
               name="category"
+              ref={categoryRef}
               id="category"
               defaultValue={state.data.category}
               required
@@ -211,6 +232,7 @@ const EditProduct = () => {
               type="text"
               placeholder="product brand"
               name="brand"
+              ref={brandRef}
               defaultValue={state.data.brand}
               onChange={(e) => handleInputChange(e)}
               required
@@ -218,6 +240,7 @@ const EditProduct = () => {
             <label htmlFor="">Product Description:</label>
             <textarea
               name="desc"
+              ref={descRef}
               onChange={(e) => handleInputChange(e)}
               required
               id=""

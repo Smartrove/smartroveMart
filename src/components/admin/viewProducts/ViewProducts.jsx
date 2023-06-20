@@ -35,7 +35,6 @@ const ViewProducts = () => {
       },
       {
         width: "500px",
-        svgSize: "500px",
         borderRadius: "8px",
         titleColor: "orangered ",
         okButtonBackground: "orangered ",
