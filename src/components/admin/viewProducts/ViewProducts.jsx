@@ -9,17 +9,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Loader from "../../loader/Loader";
 import { deleteObject, ref } from "firebase/storage";
 import { useDispatch } from "react-redux";
+import useFetchCollection from "../../../customHooks/useFetchCollection";
+import { useSelector } from "react-redux";
 
 import Notiflix from "notiflix";
 import { storeProducts } from "../../../redux/features/productSlice";
 
 const ViewProducts = () => {
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null);
-
+  const { data, isLoading, setIsLoading } = useFetchCollection("products");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const products = useSelector((store) => store["product"]);
+  // console.log(products, typeof products);
 
   const confirmDeleteProduct = (id, imageUrl) => {
     Notiflix.Confirm.show(
@@ -46,7 +47,7 @@ const ViewProducts = () => {
 
   const deleteProduct = async (id, imageUrl) => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       await deleteDoc(doc(db, "products", id));
 
       const storageRef = ref(storage, imageUrl);
@@ -62,32 +63,11 @@ const ViewProducts = () => {
   };
 
   useEffect(() => {
-    const getProducts = async () => {
-      setIsLoading(true);
-      try {
-        const collectionRef = collection(db, "products");
-        const snapshot = await getDocs(collectionRef);
-
-        // console.log("snapshot data:", snapshot);
-        const allProducts = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setProducts(allProducts);
-        dispatch(
-          storeProducts({
-            products: allProducts,
-          })
-        );
-        setIsLoading(false);
-      } catch (error) {
-        toast.error(error.code);
-        setIsLoading(false);
-      }
-    };
-
-    getProducts();
+    dispatch(
+      storeProducts({
+        products: data,
+      })
+    );
   }, []);
 
   return (
@@ -110,9 +90,9 @@ const ViewProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {products &&
-                products?.map((product, index) => {
-                  const { id, name, price, imageUrl, category } = product;
+              {data &&
+                data?.map((item, index) => {
+                  const { id, name, price, imageUrl, category } = item;
 
                   return (
                     <tr key={id}>
@@ -128,10 +108,7 @@ const ViewProducts = () => {
                       <td>{category}</td>
                       <td>{`$${price}`}</td>
                       <td className={styles.icons}>
-                        <Link
-                          to="/admin/edit-product"
-                          state={{ data: product }}
-                        >
+                        <Link to="/admin/edit-product" state={{ data: item }}>
                           <EditIcon
                             style={{ fontSize: "28px", color: "green" }}
                             // onClick={() => console.log(product)}

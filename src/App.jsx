@@ -4,6 +4,7 @@ import { Header, Footer } from "./components";
 import { Home, Contact, Login, Register, ResetPassword, Admin } from "./pages";
 import { ToastContainer } from "react-toastify";
 import {AdminOnlyRoute} from "./components/adminOnlyRoute/AdminOnlyRoute";
+import ProductDetails from "./components/product/productDetails/ProductDetails";
 
 const App = () => {
   return (
@@ -16,9 +17,15 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/admin/*" element={<AdminOnlyRoute>
-          <Admin/>
-        </AdminOnlyRoute>} />
+        <Route
+          path="/admin/*"
+          element={
+            <AdminOnlyRoute>
+              <Admin />
+            </AdminOnlyRoute>
+          }
+        />
+        <Route path="/product-details/:id" element={<ProductDetails />} />
       </Routes>
       <Footer />
     </>
