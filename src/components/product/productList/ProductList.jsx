@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./productList.module.scss";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import Search from "../../search/Search";
 import ProductItem from "../productItem/ProductItem";
+import { useDispatch, useSelector } from "react-redux";
+import { filterBySearch } from "../../../redux/features/filterSlice";
 
 const ProductList = ({ data }) => {
   const [grid, setGrid] = useState(true);
   const [search, setSearch] = useState("");
+
+  const dispatch = useDispatch();
+  const { filteredProduct } = useSelector((store) => store["filter"]);
+
+  // console.log(filter);
+
+  useEffect(() => {
+    dispatch(
+      filterBySearch({
+        data,
+        search,
+      })
+    );
+  }, [data, search, dispatch]);
   return (
     <div className={styles["product-list"]} id="product">
       <div className={styles.top}>
@@ -23,15 +39,12 @@ const ProductList = ({ data }) => {
           />
 
           <p>
-            <b>{data.length}</b> products found
+            <b>{filteredProduct.length}</b> products found
           </p>
         </div>
 
         <div>
-          <Search
-            value={search}
-            onChange={({ target }) => setSearch(target.vale)}
-          />
+          <Search value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <div className={styles.sort}>
           <label htmlFor="sort">Sort by:</label>
@@ -45,12 +58,12 @@ const ProductList = ({ data }) => {
         </div>
       </div>
       <div className={grid ? `${styles.grid}` : `${styles.list}`}>
-        {data.length === 0 ? (
+        {filteredProduct.length === 0 ? (
           <h2>No product found</h2>
         ) : (
           <>
-            {data &&
-              data?.map((item, index) => {
+            {filteredProduct &&
+              filteredProduct?.map((item, index) => {
                 return (
                   <div key={item.id}>
                     <ProductItem {...item} grid={grid} item={item} />

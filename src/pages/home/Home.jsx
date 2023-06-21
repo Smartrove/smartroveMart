@@ -5,7 +5,6 @@ import Product from "../../components/product/Product";
 
 const Home = () => {
   const url = window.location.href;
-  console.log(url);
 
   const scrollToProducts = () => {
     if (url.includes("#products")) {
@@ -23,7 +22,7 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <Slider />
+      {/* <Slider /> */}
       <Product />
     </div>
   );
