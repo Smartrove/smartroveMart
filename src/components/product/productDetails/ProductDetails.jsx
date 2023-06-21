@@ -1,8 +1,91 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./productDetails.module.scss";
+import { Link, useParams } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase/config";
+import { toast } from "react-toastify";
+import spinner from "../../../assets/spinner.jpg";
 
 const ProductDetails = () => {
-  return <div>ProductDetails</div>;
+  const [product, setProduct] = useState(null);
+  const { id } = useParams();
+
+  useEffect(() => {
+    const getSingleProduct = async () => {
+      const docRef = doc(db, "products", id);
+      const docSnap = await getDoc(docRef);
+
+      try {
+        if (docSnap.exists()) {
+          const productObject = {
+            id: id,
+            ...docSnap.data(),
+          };
+
+          setProduct(productObject);
+        } else {
+          toast.error("No product found");
+        }
+      } catch (error) {
+        toast.error(error.code);
+      }
+    };
+    getSingleProduct();
+  }, []);
+
+  return (
+    <section>
+      <div className={`container ${styles.product}`}>
+        <h2>Product Details</h2>
+        <div>
+          <Link to="/#products">&larr; Back to Products</Link>
+        </div>
+        {product === null ? (
+          <img src={spinner} alt="spinner" className="--center-all" />
+        ) : (
+          <>
+            <div className={styles.details}>
+              <div className={styles.img}>
+                <img src={product.imageUrl} alt={product.name} />
+              </div>
+              <div className={styles.content}>
+                <h3 style={{ marginTop: "10px" }}>{product.name}</h3>
+                <p className={styles.price}>{`$${product.price}`}</p>
+                <p>{product.desc}</p>
+                <p>
+                  <b style={{ fontWeight: "800" }}>SKU: </b>
+                  <span>{product.id}</span>
+                </p>
+                <p>
+                  <b style={{ fontWeight: "800" }}>Brand: </b>
+                  <span>{product.brand}</span>
+                </p>
+
+                <div className={styles.count}>
+                  <button
+                    className="--btn"
+                    style={{ backgroundColor: "lightgray" }}
+                  >
+                    {" "}
+                    -{" "}
+                  </button>
+                  <p style={{ fontWeight: "800" }}>1</p>
+                  <button
+                    className="--btn"
+                    style={{ backgroundColor: "lightgray" }}
+                  >
+                    +
+                  </button>
+                </div>
+
+                <button className="--btn --btn-danger">Add To Cart</button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default ProductDetails;

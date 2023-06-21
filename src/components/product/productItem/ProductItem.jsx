@@ -11,6 +11,7 @@ const ProductItem = ({ grid, item, id, name, price, desc, imageUrl }) => {
     }
     return text;
   };
+
   return (
     <Card cardClass={grid ? `${styles.grid}` : `${styles.list}`}>
       <Link to={`/product-details/${id}`}>

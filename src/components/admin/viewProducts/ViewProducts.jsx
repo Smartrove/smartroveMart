@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./viewProducts.module.scss";
 import { toast } from "react-toastify";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { db, storage } from "../../../firebase/config";
-import { Link, useNavigate, createSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Loader from "../../loader/Loader";
