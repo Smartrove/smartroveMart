@@ -21,7 +21,7 @@ const headerLogo = (
   <div className={styles.logo}>
     <Link to="/">
       <h2>
-        Smartrove <span>Mart...</span>
+        Smartrove <span>Hub...</span>
       </h2>
     </Link>
   </div>
@@ -54,7 +54,7 @@ const Header = () => {
     greeting = "Good Morning";
   else if (hrs >= 12 && hrs < 18) greeting = "Good Afternoon";
   else if ((hrs >= 18 && hrs < 24) || hrs > 0) greeting = "Good Evening";
-  else greeting = "Error";
+  else greeting = "Good Morning";
 
   const dispatch = useDispatch();
 
@@ -143,8 +143,8 @@ const Header = () => {
               </li>
               <li>
                 <AdminOnlyLink>
-                  <Link to='/admin/home'>
-                  <button className="--btn --btn-primary">Admin</button>
+                  <Link to="/admin/home">
+                    <button className="--btn --btn-primary">Admin</button>
                   </Link>
                 </AdminOnlyLink>
               </li>
@@ -207,7 +207,7 @@ const Header = () => {
                   {greeting}, {displayName}{" "}
                   <WavingHandIcon style={{ fontSize: "30px" }} />
                 </a>
-                </ShowOnLogin>
+              </ShowOnLogin>
             </div>
           </nav>
           <div className={styles["menu-icon"]} onClick={toggleMenuBar}>

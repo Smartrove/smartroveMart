@@ -5,16 +5,18 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import Search from "../../search/Search";
 import ProductItem from "../productItem/ProductItem";
 import { useDispatch, useSelector } from "react-redux";
-import { filterBySearch } from "../../../redux/features/filterSlice";
+import {
+  filterBySearch,
+  sortProducts,
+} from "../../../redux/features/filterSlice";
 
 const ProductList = ({ data }) => {
   const [grid, setGrid] = useState(true);
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("latest");
 
   const dispatch = useDispatch();
   const { filteredProduct } = useSelector((store) => store["filter"]);
-
-  // console.log(filter);
 
   useEffect(() => {
     dispatch(
@@ -24,6 +26,15 @@ const ProductList = ({ data }) => {
       })
     );
   }, [data, search, dispatch]);
+  useEffect(() => {
+    // console.log(sort);
+    dispatch(
+      sortProducts({
+        data,
+        sort,
+      })
+    );
+  }, [data, sort, dispatch]);
   return (
     <div className={styles["product-list"]} id="product">
       <div className={styles.top}>
@@ -48,7 +59,11 @@ const ProductList = ({ data }) => {
         </div>
         <div className={styles.sort}>
           <label htmlFor="sort">Sort by:</label>
-          <select name="category">
+          <select
+            name="category"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+          >
             <option value="latest">Latest</option>
             <option value="lowest-price">Lowest Price</option>
             <option value="highest-price">Highest Price</option>
