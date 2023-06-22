@@ -4,7 +4,7 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import Search from "../../search/Search";
 import ProductItem from "../productItem/ProductItem";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   filterBySearch,
   sortProducts,
@@ -16,7 +16,7 @@ const ProductList = ({ data }) => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(2);
+  const [productsPerPage, setProductsPerPage] = useState(9);
 
   //get current products
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -25,7 +25,6 @@ const ProductList = ({ data }) => {
   const currentProducts = data.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const dispatch = useDispatch();
-  const { filteredProduct } = useSelector((store) => store["filter"]);
 
   useEffect(() => {
     dispatch(
@@ -35,8 +34,8 @@ const ProductList = ({ data }) => {
       })
     );
   }, [data, search, dispatch]);
+
   useEffect(() => {
-    // console.log(sort);
     dispatch(
       sortProducts({
         data,
@@ -44,6 +43,7 @@ const ProductList = ({ data }) => {
       })
     );
   }, [data, sort, dispatch]);
+
   return (
     <div className={styles["product-list"]} id="product">
       <div className={styles.top}>
@@ -59,7 +59,7 @@ const ProductList = ({ data }) => {
           />
 
           <p>
-            <b>{filteredProduct.length}</b> products found
+            <b>{currentProducts.length}</b> products found
           </p>
         </div>
 
@@ -82,18 +82,15 @@ const ProductList = ({ data }) => {
         </div>
       </div>
       <div className={grid ? `${styles.grid}` : `${styles.list}`}>
-        {filteredProduct.length === 0 ? (
+        {currentProducts.length === 0 ? (
           <h2>No product found</h2>
         ) : (
           <>
-            {currentProducts &&
-              currentProducts?.map((item, index) => {
-                return (
-                  <div key={item.id}>
-                    <ProductItem {...item} grid={grid} item={item} />
-                  </div>
-                );
-              })}
+            {currentProducts.map((item, index) => (
+              <div key={item.id}>
+                <ProductItem {...item} grid={grid} item={item} />
+              </div>
+            ))}
           </>
         )}
       </div>

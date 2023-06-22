@@ -43,7 +43,29 @@ const ProductFilter = ({ data }) => {
     setCategory("All");
     setBrand("All");
     setPrice(maxPrice);
+
+    dispatch(
+      filterByCategory({
+        data,
+        category: "All",
+      })
+    );
+
+    dispatch(
+      filterByBrand({
+        data,
+        brand: "All",
+      })
+    );
+
+    dispatch(
+      filterByPrice({
+        data,
+        price: maxPrice,
+      })
+    );
   };
+  
 
   useEffect(() => {
     dispatch(

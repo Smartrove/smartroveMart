@@ -81,7 +81,7 @@ const filterSlice = createSlice({
 
     filterByPrice: (state, action) => {
       const { data, price } = action.payload;
-      const priceData = data.filter((item) => item.price === price);
+      const priceData = data.filter((item) => item.price <= price);
 
       state.filteredProduct = priceData;
     },
