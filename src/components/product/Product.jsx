@@ -1,29 +1,47 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./product.module.scss";
 import ProductFilter from "./productFilter/ProductFilter";
 import ProductList from "./productList/ProductList";
 import useFetchCollection from "../../customHooks/useFetchCollection";
-import { useDispatch, useSelector } from "react-redux";
-import { storeProducts } from "../../redux/features/productSlice";
+import { useDispatch } from "react-redux";
+import {
+  storeProducts,
+  getPriceRange,
+} from "../../redux/features/productSlice";
 import spinner from "../../assets/spinner.jpg";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 const Product = () => {
+  const [showFilter, setShowFilter] = useState(false);
   const { data, isLoading } = useFetchCollection("products");
   const dispatch = useDispatch();
 
-  const products = useSelector((store) => store["product"]);
+  const toggleFilter = () => {
+    setShowFilter(!showFilter);
+  };
+
   useEffect(() => {
     dispatch(
       storeProducts({
         products: data,
       })
     );
-  }, []);
+
+    dispatch(
+      getPriceRange({
+        products: data,
+      })
+    );
+  }, [data, dispatch]);
   return (
     <section>
       <div className={`container ${styles.product}`}>
-        <aside className={styles.filter}>
-          <ProductFilter />
+        <aside
+          className={
+            showFilter ? `${styles.filter} ${styles.show}` : `${styles.filter}`
+          }
+        >
+          <ProductFilter data={data} />
         </aside>
 
         <div className={styles.content}>
@@ -32,6 +50,13 @@ const Product = () => {
           ) : (
             <ProductList data={data} />
           )}
+
+          <div className={styles.icon} onClick={toggleFilter}>
+            <FilterAltIcon style={{ fontSize: "28px" }} />
+            <p>
+              <b>{showFilter ? "Hide Filter" : "Show Filter"}</b>
+            </p>
+          </div>
         </div>
       </div>
     </section>

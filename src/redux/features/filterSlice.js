@@ -53,9 +53,47 @@ const filterSlice = createSlice({
 
       state.filteredProduct = sortData;
     },
+
+    filterByCategory: (state, action) => {
+      const { data, category } = action.payload;
+      let categoryData = [];
+
+      if (category === "All") {
+        categoryData = data;
+      } else {
+        categoryData = data.filter((item) => item.category === category);
+      }
+
+      state.filteredProduct = categoryData;
+    },
+    filterByBrand: (state, action) => {
+      const { data, brand } = action.payload;
+      let brandData = [];
+
+      if (brand === "All") {
+        brandData = data;
+      } else {
+        brandData = data.filter((item) => item.brand === brand);
+      }
+
+      state.filteredProduct = brandData;
+    },
+
+    filterByPrice: (state, action) => {
+      const { data, price } = action.payload;
+      const priceData = data.filter((item) => item.price === price);
+
+      state.filteredProduct = priceData;
+    },
   },
 });
 
-export const { filterBySearch, sortProducts } = filterSlice.actions;
+export const {
+  filterBySearch,
+  sortProducts,
+  filterByCategory,
+  filterByBrand,
+  filterByPrice,
+} = filterSlice.actions;
 
 export default filterSlice.reducer;
