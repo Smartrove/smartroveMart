@@ -4,7 +4,7 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import Search from "../../search/Search";
 import ProductItem from "../productItem/ProductItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   filterBySearch,
   sortProducts,
@@ -18,22 +18,27 @@ const ProductList = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(9);
 
+  const { filteredProduct } = useSelector((store) => store["filter"]);
+
   //get current products
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
-  const currentProducts = data.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProduct.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(
       filterBySearch({
-        data,
+        filteredProduct,
         search,
       })
     );
-  }, [data, search, dispatch]);
+  }, [search, dispatch]);
 
   useEffect(() => {
     dispatch(

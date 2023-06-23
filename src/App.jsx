@@ -1,9 +1,17 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Header, Footer } from "./components";
-import { Home, Contact, Login, Register, ResetPassword, Admin } from "./pages";
+import {
+  Home,
+  Contact,
+  Login,
+  Register,
+  ResetPassword,
+  Admin,
+  Cart,
+} from "./pages";
 import { ToastContainer } from "react-toastify";
-import {AdminOnlyRoute} from "./components/adminOnlyRoute/AdminOnlyRoute";
+import { AdminOnlyRoute } from "./components/adminOnlyRoute/AdminOnlyRoute";
 import ProductDetails from "./components/product/productDetails/ProductDetails";
 
 const App = () => {
@@ -26,6 +34,7 @@ const App = () => {
           }
         />
         <Route path="/product-details/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
       <Footer />
     </>
