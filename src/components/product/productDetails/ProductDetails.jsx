@@ -5,10 +5,34 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase/config";
 import { toast } from "react-toastify";
 import spinner from "../../../assets/spinner.jpg";
+import {
+  addToCart,
+  decreaseCart,
+  // calculateTotalQuantity,
+} from "../../../redux/features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const { id } = useParams();
+
+  const dispatch = useDispatch();
+  const { cartItems } = useSelector((store) => store["cart"]);
+  console.log(cartItems);
+
+  const isCartAdded = cartItems.findIndex((item) => {
+    return item.id === id;
+  });
+
+  const handleAddToCart = (item) => {
+    dispatch(addToCart(item));
+    dispatch(calculateTotalQuantity());
+  };
+
+  const decreaseCartItems = (cart) => {
+    dispatch(decreaseCart(cart));
+    dispatch(calculateTotalQuantity());
+  };
 
   useEffect(() => {
     const getSingleProduct = async () => {
@@ -62,23 +86,36 @@ const ProductDetails = () => {
                 </p>
 
                 <div className={styles.count}>
-                  <button
-                    className="--btn"
-                    style={{ backgroundColor: "lightgray" }}
-                  >
-                    {" "}
-                    -{" "}
-                  </button>
-                  <p style={{ fontWeight: "800" }}>1</p>
-                  <button
-                    className="--btn"
-                    style={{ backgroundColor: "lightgray" }}
-                  >
-                    +
-                  </button>
+                  {isCartAdded < 0 ? null : (
+                    <>
+                      <button
+                        className="--btn"
+                        style={{ backgroundColor: "lightgray" }}
+                        onClick={() => decreaseCartItems(product)}
+                      >
+                        {" "}
+                        -{" "}
+                      </button>
+                      <p style={{ fontWeight: "800" }}>
+                        {cartItems[0].cartQuantity}
+                      </p>
+                      <button
+                        className="--btn"
+                        style={{ backgroundColor: "lightgray" }}
+                        onClick={() => handleAddToCart(product)}
+                      >
+                        +
+                      </button>
+                    </>
+                  )}
                 </div>
 
-                <button className="--btn --btn-danger">Add To Cart</button>
+                <button
+                  className="--btn --btn-danger"
+                  onClick={() => handleAddToCart(product)}
+                >
+                  Add To Cart
+                </button>
               </div>
             </div>
           </>

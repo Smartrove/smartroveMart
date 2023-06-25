@@ -3,10 +3,14 @@ import styles from "./productItem.module.scss";
 import Card from "../../card/Card";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../../redux/features/cartSlice";
+import {
+  addToCart,
+  calculateTotalQuantity,
+} from "../../../redux/features/cartSlice";
 
 const ProductItem = ({ grid, item, id, name, price, desc, imageUrl }) => {
   const dispatch = useDispatch();
+
   const shortenText = (text, n) => {
     if (text.length > n) {
       const shortenedText = text.substring(0, n).concat("...");
@@ -17,6 +21,7 @@ const ProductItem = ({ grid, item, id, name, price, desc, imageUrl }) => {
 
   const handleAddToCart = (item) => {
     dispatch(addToCart(item));
+    dispatch(calculateTotalQuantity());
   };
 
   return (

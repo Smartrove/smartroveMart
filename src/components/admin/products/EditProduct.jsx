@@ -42,7 +42,6 @@ const EditProduct = () => {
   const { products } = useSelector((store) => store["product"]);
 
   const productEdit = products.filter((item) => item.id === id);
-  // console.log(productEdit, typeof productEdit);
 
   const [product, setProduct] = useState({
     ...initialState,
@@ -55,7 +54,6 @@ const EditProduct = () => {
   const navigate = useNavigate();
 
   const { state } = useLocation();
-  // console.log(state.data.imageUrl);
 
   const nameRef = useRef();
   const priceRef = useRef();
@@ -132,7 +130,6 @@ const EditProduct = () => {
         createAt: state.data.createAt,
         editedAt: Timestamp.now().toDate(),
       });
-      console.log(state.data.id);
     } catch (error) {
       toast.error(error.code);
     }

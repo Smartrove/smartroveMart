@@ -9,13 +9,17 @@ import WavingHandIcon from "@mui/icons-material/WavingHand";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { ToastContainer, toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setActiveUser,
   removeActiveUser,
 } from "../../redux/features/authSlice";
-import { AdminOnlyLink} from "../adminOnlyRoute/AdminOnlyRoute";
-import { ShowOnLogin, ShowOnLogOut} from "../hiddenLinks/hiddenLink";
+import { AdminOnlyLink } from "../adminOnlyRoute/AdminOnlyRoute";
+import { ShowOnLogin, ShowOnLogOut } from "../hiddenLinks/hiddenLink";
+import {
+  calculateTotalQuantity,
+  resetCart,
+} from "../../redux/features/cartSlice";
 
 const headerLogo = (
   <div className={styles.logo}>
@@ -27,24 +31,15 @@ const headerLogo = (
   </div>
 );
 
-const cart = (
-  <span className={styles.cart}>
-    <Link to="/cart">
-      Cart
-      <Badge badgeContent={0} color="primary">
-        <ShoppingCartIcon style={{ fontSize: "20px" }} />
-      </Badge>
-    </Link>
-  </span>
-);
-
 const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [displayName, setDisplayName] = useState("");
-  const [showGreetings, setShowGreetings] = useState(false);
+  const [scrollPage, setScrollPage] = useState(false);
+  const { cartTotalQuantity } = useSelector((store) => store["cart"]);
 
+  const { email } = useSelector((store) => store["auth"]);
   const myDate = new Date();
   const hrs = myDate.getHours();
   const mins = myDate.getMinutes();
@@ -58,15 +53,32 @@ const Header = () => {
 
   const dispatch = useDispatch();
 
+  //fix navbar
+  const fixedNavbar = () => {
+    if (window.scrollY > 50) {
+      setScrollPage(true);
+    } else {
+      setScrollPage(false);
+    }
+  };
+
+  window.addEventListener("scroll", fixedNavbar);
+
+  //calculate cart total quantity
+  useEffect(() => {
+    dispatch(calculateTotalQuantity());
+  }, []);
+
+  // monitor currently signed in user
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
         let shownName = user.displayName;
-        const toBeDisplayed = shownName.split(" ");
+        // const toBeDisplayed = shownName.split(" ");
 
-        setDisplayName(toBeDisplayed[0]);
-        setShowGreetings(true);
+        setDisplayName(shownName);
+        //
         //extract name from of null displayName
         if (user.displayName === null) {
           // const nameFromEmail = user.email.slice(0, -10);// first method
@@ -105,8 +117,9 @@ const Header = () => {
   const logoutUser = () => {
     signOut(auth)
       .then(() => {
+        // dispatch(resetCart());
         toast.success("logout successful");
-        navigate("/login");
+        navigate("/");
       })
       .catch((error) => {
         error.code = "unable to logout";
@@ -116,7 +129,7 @@ const Header = () => {
   return (
     <>
       <ToastContainer />
-      <header>
+      <header className={scrollPage ? `${styles.fixed}` : null}>
         <div className={styles.header}>
           {headerLogo}
           <nav
@@ -193,15 +206,20 @@ const Header = () => {
                   </NavLink>
                 </ShowOnLogin>
               </span>
-              {cart}
+              <span className={styles.cart}>
+                <Link to="/cart">
+                  Cart
+                  {email === null ? null : (
+                    <>
+                      <Badge badgeContent={cartTotalQuantity} color="primary">
+                        <ShoppingCartIcon style={{ fontSize: "20px" }} />
+                      </Badge>
+                    </>
+                  )}
+                </Link>
+              </span>
             </div>
             <div>
-              {/* {showGreetings ? (
-                <a href="#" style={{ color: "#ff7722" }}>
-                  {greeting}, {displayName}{" "}
-                  <WavingHandIcon style={{ fontSize: "30px" }} />
-                </a>
-              ) : null} */}
               <ShowOnLogin>
                 <a href="#" style={{ color: "#ff7722" }}>
                   {greeting}, {displayName}{" "}
@@ -211,7 +229,14 @@ const Header = () => {
             </div>
           </nav>
           <div className={styles["menu-icon"]} onClick={toggleMenuBar}>
-            {cart}
+            <span className={styles.cart}>
+              <Link to="/cart">
+                Cart
+                <Badge badgeContent={`${cartTotalQuantity}`} color="primary">
+                  <ShoppingCartIcon style={{ fontSize: "20px" }} />
+                </Badge>
+              </Link>
+            </span>
             <MenuIcon />
           </div>
         </div>

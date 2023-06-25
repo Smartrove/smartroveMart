@@ -12,11 +12,14 @@ import {
 import { auth } from "../../firebase/config";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../components/loader/Loader";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const { previousUrl } = useSelector((store) => store["cart"]);
 
   const notify = (text) => toast(text);
   const navigate = useNavigate();
@@ -44,16 +47,10 @@ const Login = () => {
     setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        if (user.emailVerified === false) {
-          toast.warning("please verify your email address");
-          setIsLoading(false);
-          return;
-        }
         toast.success("sign in successful");
         setIsLoading(false);
 
-        navigate("/");
+        redirectUser();
       })
       .catch((error) => {
         error.code = "user not found or incorrect password";
@@ -62,22 +59,28 @@ const Login = () => {
       });
   };
 
+  const redirectUser = () => {
+    if (previousUrl.includes("cart")) {
+      return navigate("/cart");
+    }
+
+    navigate("/");
+  };
+
   const provider = new GoogleAuthProvider();
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
         // The signed-in user info.
         const user = result.user;
         toast.success("login successful");
-        navigate("/");
+        redirectUser();
       })
       .catch((error) => {
-        const errorCode = error.code;
+        let errorCode = error.code;
         errorCode = "invalid credentials";
         toast.error(errorCode);
-        const credential = GoogleAuthProvider.credentialFromError(error);
       });
   };
   return (
