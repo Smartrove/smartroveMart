@@ -8,7 +8,7 @@ import spinner from "../../../assets/spinner.jpg";
 import {
   addToCart,
   decreaseCart,
-  // calculateTotalQuantity,
+  calculateTotalQuantity,
 } from "../../../redux/features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,7 +18,6 @@ const ProductDetails = () => {
 
   const dispatch = useDispatch();
   const { cartItems } = useSelector((store) => store["cart"]);
-  console.log(cartItems);
 
   const isCartAdded = cartItems.findIndex((item) => {
     return item.id === id;
