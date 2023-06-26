@@ -11,12 +11,10 @@ const checkoutSlice = createSlice({
   reducers: {
     storeShippingAddress: (state, action) => {
       //store the frontend data for the checkout
-      console.log(action.payload);
       state.shippingAddress = action.payload;
     },
     storeBillingAddress: (state, action) => {
       //store the frontend data for the checkout
-      console.log(action.payload);
 
       state.billingAddress = action.payload;
     },

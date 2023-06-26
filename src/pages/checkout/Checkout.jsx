@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./checkout.module.scss";
 import {
   calculateSubTotal,
   calculateTotalQuantity,
@@ -10,15 +9,18 @@ import {
 import { toast } from "react-toastify";
 import CheckoutForm from "../../components/checkoutForm/CheckoutForm";
 
-const Checkout = () => {
-  const [clientSecret, setClientSecret] = useState("");
-  const [message, setMessage] = useState("Initializing Checkout");
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
+const Checkout = () => {
+  const [message, setMessage] = useState("Initializing checkout...");
+  const [clientSecret, setClientSecret] = useState("");
   const dispatch = useDispatch();
 
   const { cartItems, cartTotalAmount, CartTotalQuantity } = useSelector(
     (store) => store["cart"]
   );
+
+  // console.log(cartItems);
 
   const { email } = useSelector((store) => store["auth"]);
   const { billingAddress, shippingAddress } = useSelector(
@@ -30,31 +32,34 @@ const Checkout = () => {
     dispatch(calculateTotalQuantity());
   }, [dispatch, cartItems]);
 
-  const description = `payment: Email: ${email}, Amount: ${cartTotalAmount}`;
+  const description = `eShop payment: email: ${email}, Amount: ${cartTotalAmount}`;
+
   useEffect(() => {
+    // http://localhost:4242/create-payment-intent
     // Create PaymentIntent as soon as the page loads
     fetch("http://localhost:4242/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         items: cartItems,
-        email,
-        shippingAddress,
-        billingAddress,
+        userEmail: email,
+        shipping: shippingAddress,
+        billing: billingAddress,
         description,
       }),
     })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.ok) {
           return res.json();
         }
-
         return res.json().then((json) => Promise.reject(json));
       })
-      .then((data) => setClientSecret(data.clientSecret))
+      .then((data) => {
+        setClientSecret(data.clientSecret);
+      })
       .catch((error) => {
         setMessage("Failed to initialize checkout");
-        toast.error("something went wrong");
+        toast.error("Something went wrong!!!");
       });
   }, []);
 
@@ -65,7 +70,7 @@ const Checkout = () => {
     clientSecret,
     appearance,
   };
-  const stripePromise = loadStripe(process.env.STRIPE_PRIVATE_KEY);
+
   return (
     <>
       <section>

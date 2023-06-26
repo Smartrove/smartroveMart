@@ -1,34 +1,34 @@
+require("dotenv").config();
 const express = require("express");
-const app = express();
-const dotenv = require("dotenv/config");
 const cors = require("cors");
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+
 // This is your test secret API key.
-const stripe = require("stripe")(process.env.REACT_STRIPE_PK_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 app.get("/", (req, res) => {
-  res.json("Welcome To Home");
+  res.send("Welcome to eShop website.");
 });
 
-const calcArray = [];
+const array = [];
 const calculateOrderAmount = (items) => {
-  // Replace this constant with a calculation of the order's amount
-  // Calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
-
   items.map((item) => {
-    const { cartQuantity, price } = item;
-    const cartItemAmount = cartQuantity * price;
-    return calcArray.push(cartItemAmount);
+    const { price, cartQuantity } = item;
+    const cartItemAmount = price * cartQuantity;
+    return array.push(cartItemAmount);
   });
-  const totalAmount = calcArray.reduce((a, b) => {
+  const totalAmount = array.reduce((a, b) => {
     return a + b;
   }, 0);
+
   return totalAmount * 100;
 };
 
 app.post("/create-payment-intent", async (req, res) => {
-  const { items, shippingAddress, description, email } = req.body;
+  const { items, shipping, description } = req.body;
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
@@ -37,20 +37,19 @@ app.post("/create-payment-intent", async (req, res) => {
     automatic_payment_methods: {
       enabled: true,
     },
-
     description,
-    shippingAddress: {
+    shipping: {
       address: {
-        line1: shippingAddress.line1,
-        line2: shippingAddress.line2,
-        city: shippingAddress.city,
-        country: shippingAddress.country,
-        postal_code: shippingAddress.postal_code,
+        line1: shipping.line1,
+        line2: shipping.line2,
+        city: shipping.city,
+        country: shipping.country,
+        postal_code: shipping.postal_code,
       },
-      name: shippingAddress.name,
-      phone: shippingAddress.phone,
+      name: shipping.name,
+      phone: shipping.phone,
     },
-    receipt_email: email,
+    // receipt_email: customerEmail
   });
 
   res.send({
@@ -58,11 +57,5 @@ app.post("/create-payment-intent", async (req, res) => {
   });
 });
 
-app.use(cors);
-app.use(express.static("public"));
-app.use(express.json());
-
 const PORT = process.env.PORT || 4242;
-app.listen(process.env.PORT, () =>
-  console.log(`server listening on port ${process.env.PORT}`)
-);
+app.listen(PORT, () => console.log(`Node server listening on port ${PORT}`));

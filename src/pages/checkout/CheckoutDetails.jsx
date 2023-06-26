@@ -19,7 +19,7 @@ const initialAddress = {
   city: "",
   state: "",
   postal_code: "",
-  country: null,
+  country: "",
   phone: "",
 };
 

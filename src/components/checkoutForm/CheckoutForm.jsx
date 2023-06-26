@@ -9,6 +9,7 @@ import {
 import Card from "../card/Card";
 import CheckoutSummary from "../../pages/checkout/CheckoutSummary";
 import spinner from "../../assets/spinner.jpg";
+import { toast } from "react-toastify";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
@@ -32,30 +33,44 @@ const CheckoutForm = () => {
     }
   }, [stripe]);
 
+  const saveOrder = () => {
+    console.log("orders saved");
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage(null);
 
     if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000",
-      },
-    });
+    const confirmPayment = await stripe
+      .confirmPayment({
+        elements,
+        confirmParams: {
+          // Make sure to change this to your payment completion page
+          return_url: "http://localhost:3000/checkout-success",
+        },
 
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
-    } else {
-      setMessage("An unexpected error occurred.");
-    }
+        redirect_url: "if_required",
+      })
+      .then((result) => {
+        //ok: payment load or bad: error
+        if (result.error) {
+          toast.error(result.error.message);
+          setMessage(result.error.message);
+          return;
+        }
+        if (result.paymentIntent) {
+          if (result.paymentIntent.status === "succeeded") {
+            setIsLoading(false);
+            toast.success("payment successful");
+            saveOrder();
+          }
+        }
+      });
 
     setIsLoading(false);
   };
