@@ -11,7 +11,6 @@ const ProductFilter = ({ data }) => {
   const [category, setCategory] = useState("All");
   const [brand, setBrand] = useState("All");
   const [price, setPrice] = useState(7000);
-  const { filteredProduct } = useSelector((store) => store["filter"]);
 
   const { minPrice } = useSelector((store) => store["product"]);
   const { maxPrice } = useSelector((store) => store["product"]);

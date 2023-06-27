@@ -17,6 +17,8 @@ import CheckoutDetails from "./pages/checkout/CheckoutDetails";
 import Checkout from "./pages/checkout/Checkout";
 import CheckoutSuccess from "./pages/checkout/CheckoutSuccess";
 import Order from "./pages/orderHistory/Order";
+import OrderDetails from "./pages/orderHistory/OrderDetails";
+import ProductReview from "./components/reviewProducts/ProductReview";
 
 const App = () => {
   return (
@@ -43,6 +45,8 @@ const App = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/checkout-success" element={<CheckoutSuccess />} />
         <Route path="/order-history" element={<Order />} />
+        <Route path="/order-details/:id" element={<OrderDetails />} />
+        <Route path="/review-product/:id" element={<ProductReview />} />
       </Routes>
       <Footer />
     </>

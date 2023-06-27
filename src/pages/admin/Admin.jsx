@@ -2,12 +2,12 @@ import React from "react";
 import styles from "./admin.module.scss";
 import AdminNavBar from '../../components/admin/navbar/AdminNavBar'
 import { Route, Routes } from "react-router-dom";
-import { Home } from "..";
 import {
   AddProduct,
   ViewProducts,
   Orders,
   EditProduct,
+  Home,
 } from "../../components";
 
 const Admin = () => {

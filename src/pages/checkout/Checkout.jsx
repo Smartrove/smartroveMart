@@ -16,9 +16,7 @@ const Checkout = () => {
   const [clientSecret, setClientSecret] = useState("");
   const dispatch = useDispatch();
 
-  const { cartItems, cartTotalAmount, CartTotalQuantity } = useSelector(
-    (store) => store["cart"]
-  );
+  const { cartItems, cartTotalAmount } = useSelector((store) => store["cart"]);
 
   // console.log(cartItems);
 

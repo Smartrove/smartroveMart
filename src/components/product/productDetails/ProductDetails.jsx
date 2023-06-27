@@ -9,6 +9,9 @@ import {
 } from "../../../redux/features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import useFetchDoc from "../../../customHooks/useFetchDoc";
+import useFetchCollection from "../../../customHooks/useFetchCollection";
+import Card from "../../card/Card";
+import StarsRating from "react-star-rate";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
@@ -20,6 +23,9 @@ const ProductDetails = () => {
     collectionName: "products",
     documentId: id,
   });
+
+  const { data } = useFetchCollection("reviews");
+  const filteredReview = data.filter((review) => review.id === id);
 
   const isCartAdded = cartItems.findIndex((item) => {
     return item.id === id;
@@ -102,6 +108,38 @@ const ProductDetails = () => {
             </div>
           </>
         )}
+
+        <Card cardClass={styles.card}>
+          <h3>Product Review</h3>
+          <div>
+            {filteredReview.length === 0 ? (
+              <p>No review available</p>
+            ) : (
+              <>
+                {filteredReview &&
+                  filteredReview?.map((item, index) => {
+                    const { id, rate, review, reviewDate, userName } = item;
+
+                    return (
+                      <>
+                        <div className={styles.review} key={id}>
+                          <StarsRating value={rate} />
+                          <p>{review}</p>
+                          <span style={{ fontWeight: "500" }}>
+                            {reviewDate}
+                          </span>
+                          <br />
+                          <span style={{ fontWeight: "500" }}>
+                            by: {userName}
+                          </span>
+                        </div>
+                      </>
+                    );
+                  })}
+              </>
+            )}
+          </div>
+        </Card>
       </div>
     </section>
   );

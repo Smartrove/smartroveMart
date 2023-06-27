@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 
 const useFetchDoc = ({ collectionName, documentId }) => {
-  const [document, setDocument] = useState(null);
+  const [fetchedDocument, setFetchedDocument] = useState(null);
 
   const getDocument = async () => {
     const docRef = doc(db, collectionName, documentId);
@@ -19,7 +19,7 @@ const useFetchDoc = ({ collectionName, documentId }) => {
           ...docSnap.data(),
         };
 
-        setDocument(productObject);
+        setFetchedDocument(productObject);
       } else {
         toast.error("No document found");
       }
@@ -32,7 +32,7 @@ const useFetchDoc = ({ collectionName, documentId }) => {
     getDocument();
   }, [collectionName, documentId]);
 
-  return { document };
+  return { document: fetchedDocument };
 };
 
 export default useFetchDoc;

@@ -4,10 +4,10 @@ import useFetchCollection from "../../customHooks/useFetchCollection";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { storeOrders } from "../../redux/features/orderSlice";
-import Loader from "../../components/loader/Loader";
 import { useNavigate } from "react-router-dom";
+import spinner from "../../assets/spinner.jpg";
 const Order = () => {
-  const { data, isLoading, setIsLoading } = useFetchCollection("orders");
+  const { data, isLoading } = useFetchCollection("orders");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { orderHistory } = useSelector((store) => store["order"]);
@@ -34,7 +34,9 @@ const Order = () => {
         <br />
 
         <>
-          {isLoading && <Loader />}
+          {isLoading && (
+            <img src={spinner} alt="spinner" className="--center-all" />
+          )}
           <div className={styles.table}>
             {filteredOrder.length === 0 ? (
               <p>No order found</p>

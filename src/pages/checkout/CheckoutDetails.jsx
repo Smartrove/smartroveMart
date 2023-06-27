@@ -2,9 +2,8 @@ import React from "react";
 import styles from "./checkout.module.scss";
 import { useState } from "react";
 import Card from "../../components/card/Card";
-import { useEffect } from "react";
 import { CountryDropdown } from "react-country-region-selector";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   storeShippingAddress,
   storeBillingAddress,

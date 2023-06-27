@@ -24,7 +24,7 @@ const CheckoutSummary = () => {
           <>
             <div>
               <p
-                style={{ fontWeight: "800" }}
+                style={{ fontWeight: "500" }}
               >{`Cart Item(s): ${cartTotalQuantity}`}</p>
 
               <div className={styles.text}>
@@ -38,11 +38,11 @@ const CheckoutSummary = () => {
                   return (
                     <Card cardClass={styles.card} key={id}>
                       <h4>Product:{name}</h4>
-                      <p style={{ fontWeight: "800" }}>
+                      <p style={{ fontWeight: "500" }}>
                         Quantity: {cartQuantity}
                       </p>
-                      <p style={{ fontWeight: "800" }}>Price: {`$${price}`}</p>
-                      <p style={{ fontWeight: "800" }}>
+                      <p style={{ fontWeight: "500" }}>Price: {`$${price}`}</p>
+                      <p style={{ fontWeight: "500" }}>
                         Set Price: {`$${price * cartQuantity}`}
                       </p>
                     </Card>
