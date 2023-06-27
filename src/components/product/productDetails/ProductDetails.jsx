@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./productDetails.module.scss";
 import { Link, useParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase/config";
-import { toast } from "react-toastify";
 import spinner from "../../../assets/spinner.jpg";
 import {
   addToCart,
@@ -11,6 +8,7 @@ import {
   calculateTotalQuantity,
 } from "../../../redux/features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import useFetchDoc from "../../../customHooks/useFetchDoc";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
@@ -18,6 +16,10 @@ const ProductDetails = () => {
 
   const dispatch = useDispatch();
   const { cartItems } = useSelector((store) => store["cart"]);
+  const { document } = useFetchDoc({
+    collectionName: "products",
+    documentId: id,
+  });
 
   const isCartAdded = cartItems.findIndex((item) => {
     return item.id === id;
@@ -34,27 +36,8 @@ const ProductDetails = () => {
   };
 
   useEffect(() => {
-    const getSingleProduct = async () => {
-      const docRef = doc(db, "products", id);
-      const docSnap = await getDoc(docRef);
-
-      try {
-        if (docSnap.exists()) {
-          const productObject = {
-            id: id,
-            ...docSnap.data(),
-          };
-
-          setProduct(productObject);
-        } else {
-          toast.error("No product found");
-        }
-      } catch (error) {
-        toast.error(error.code);
-      }
-    };
-    getSingleProduct();
-  }, []);
+    setProduct(document);
+  }, [document]);
 
   return (
     <section>

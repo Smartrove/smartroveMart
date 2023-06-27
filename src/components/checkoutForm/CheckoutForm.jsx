@@ -10,14 +10,24 @@ import Card from "../card/Card";
 import CheckoutSummary from "../../pages/checkout/CheckoutSummary";
 import spinner from "../../assets/spinner.jpg";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Timestamp, addDoc, collection } from "firebase/firestore";
+import { db } from "../../firebase/config";
+import { clearItemsFromCart } from "../../redux/features/cartSlice";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [email, setEmail] = useState("");
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { userId, email } = useSelector((store) => store["auth"]);
+  const { cartItems, cartTotalAmount } = useSelector((store) => store["cart"]);
+  const { shippingAddress } = useSelector((store) => store["checkout"]);
 
   useEffect(() => {
     if (!stripe) {
@@ -33,8 +43,30 @@ const CheckoutForm = () => {
     }
   }, [stripe]);
 
-  const saveOrder = () => {
-    console.log("orders saved");
+  const saveOrder = async () => {
+    const orderDate = new Date();
+    const date = orderDate.toDateString();
+    const time = orderDate.toLocaleTimeString();
+    const orderConfig = {
+      userId,
+      email,
+      orderDate: date,
+      orderTime: time,
+      orderAmount: cartTotalAmount,
+      orderStatus: "Order placed...",
+      cartItems,
+      shippingAddress,
+      createdAt: Timestamp.now().toDate(),
+    };
+    try {
+      const docRef = await addDoc(collection(db, "orders"), orderConfig);
+      dispatch(clearItemsFromCart());
+      toast.success("order saved successfully");
+
+      navigate("/checkout-success");
+    } catch (error) {
+      toast.error(error.code);
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,10 +83,10 @@ const CheckoutForm = () => {
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: "http://localhost:3000/checkout-success",
+          return_url: "http://localhost:3006/checkout-success",
         },
 
-        redirect_url: "if_required",
+        redirect: "if_required",
       })
       .then((result) => {
         //ok: payment load or bad: error
