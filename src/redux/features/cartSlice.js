@@ -82,7 +82,7 @@ const cartSlice = createSlice({
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
 
-    calculateSubTotal: (state, action) => {
+    calculateSubTotal: (state) => {
       const calcArray = [];
       state.cartItems.map((item) => {
         const { cartQuantity, price } = item;
