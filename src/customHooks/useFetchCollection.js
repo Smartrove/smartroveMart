@@ -13,12 +13,10 @@ const useFetchCollection = (collectionName) => {
       const collectionRef = collection(db, collectionName);
       const snapshot = await getDocs(collectionRef);
 
-      // console.log("snapshot data:", snapshot);
       const allData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
       setData(allData);
       setIsLoading(false);
     } catch (error) {
@@ -30,7 +28,6 @@ const useFetchCollection = (collectionName) => {
   useEffect(() => {
     getProductsCollection();
   }, []);
-
   return { data, isLoading, setIsLoading };
 };
 

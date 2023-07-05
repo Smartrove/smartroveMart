@@ -10,13 +10,15 @@ import {
   sortProducts,
 } from "../../../redux/features/filterSlice";
 import Pagination from "../../pagination/Pagination";
+import useFetchCollection from "../../../customHooks/useFetchCollection";
 
-const ProductList = ({ data }) => {
+const ProductList = () => {
   const [grid, setGrid] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(9);
+  const { data } = useFetchCollection("products");
 
   const { filteredProduct } = useSelector((store) => store["filter"]);
 
@@ -34,7 +36,7 @@ const ProductList = ({ data }) => {
   useEffect(() => {
     dispatch(
       filterBySearch({
-        filteredProduct,
+        data,
         search,
       })
     );

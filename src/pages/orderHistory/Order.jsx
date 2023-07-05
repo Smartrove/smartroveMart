@@ -6,22 +6,48 @@ import { useEffect } from "react";
 import { storeOrders } from "../../redux/features/orderSlice";
 import { useNavigate } from "react-router-dom";
 import spinner from "../../assets/spinner.jpg";
+import { useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/config";
+import { toast } from "react-toastify";
 const Order = () => {
-  const { data, isLoading } = useFetchCollection("orders");
+  const [order, setOrder] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { orderHistory } = useSelector((store) => store["order"]);
   const { userId } = useSelector((store) => store["auth"]);
 
   const handleClick = (id) => {
     navigate(`/order-details/${id}`);
   };
 
-  const filteredOrder = orderHistory.filter((order) => order.userId === userId);
+  const filteredOrder = order.filter((order) => order.userId === userId);
+  const getOrdersCollection = async () => {
+    setIsLoading(true);
+    try {
+      const collectionRef = collection(db, "orders");
+      const snapshot = await getDocs(collectionRef);
+
+      let allData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setOrder(allData);
+    } catch (error) {
+      toast.error(error.code);
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    dispatch(storeOrders(data));
-  }, [dispatch, data]);
+    getOrdersCollection();
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    dispatch(storeOrders(order));
+  }, [dispatch, order]);
 
   return (
     <section>

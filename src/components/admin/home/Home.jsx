@@ -9,6 +9,7 @@ import useFetchCollection from "../../../customHooks/useFetchCollection";
 import { storeOrders } from "../../../redux/features/orderSlice";
 import { storeProducts } from "../../../redux/features/productSlice";
 import { useMemo } from "react";
+import Chart from "../../chart/Chart";
 
 //icons
 const earningIcon = (
@@ -71,6 +72,8 @@ const Home = () => {
           icon={orderIcon}
         />
       </div>
+
+      <Chart />
     </div>
   );
 };
