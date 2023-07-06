@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./order.module.scss";
-import useFetchCollection from "../../customHooks/useFetchCollection";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { storeOrders } from "../../redux/features/orderSlice";

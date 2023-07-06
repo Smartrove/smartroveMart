@@ -1,9 +1,6 @@
 import React from 'react'
-import styles from './order.module.scss'
-import useFetchCollection from "../../../customHooks/useFetchCollection";
-import { useDispatch, useSelector } from "react-redux";
+import styles from "./order.module.scss";
 import { useNavigate } from "react-router-dom";
-import storeOrders from "../../../redux/features/orderSlice";
 import { useEffect } from "react";
 import spinner from "../../../assets/spinner.jpg";
 import { collection, getDocs } from "firebase/firestore";
@@ -14,7 +11,6 @@ import { toast } from "react-toastify";
 const AdminOrders = () => {
   const [order, setOrder] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
 
   const getOrdersCollection = async () => {
     setIsLoading(true);
@@ -38,8 +34,6 @@ const AdminOrders = () => {
   }, []);
 
   const navigate = useNavigate();
-
-  const { userId } = useSelector((store) => store["auth"]);
 
   const handleClick = (id) => {
     navigate(`/admin/order-details/${id}`);

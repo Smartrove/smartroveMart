@@ -16,7 +16,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (email === "") {
-      toast.warning("email cannit be empty");
+      toast.warning("email cannot be empty");
       return;
     }
 
@@ -34,9 +34,7 @@ const ResetPassword = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        errorCode = "reset failed";
-        toast.error(errorCode);
+        toast.error({ error: "reset failed" });
         setIsLoading(false);
       });
   };

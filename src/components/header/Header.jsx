@@ -16,10 +16,7 @@ import {
 } from "../../redux/features/authSlice";
 import { AdminOnlyLink } from "../adminOnlyRoute/AdminOnlyRoute";
 import { ShowOnLogin, ShowOnLogOut } from "../hiddenLinks/hiddenLink";
-import {
-  calculateTotalQuantity,
-  resetCart,
-} from "../../redux/features/cartSlice";
+import { calculateTotalQuantity } from "../../redux/features/cartSlice";
 
 const headerLogo = (
   <div className={styles.logo}>
@@ -75,7 +72,6 @@ const Header = () => {
       if (user) {
         const uid = user.uid;
         let shownName = user.displayName;
-        // const toBeDisplayed = shownName.split(" ");
 
         setDisplayName(shownName);
         //
@@ -174,27 +170,12 @@ const Header = () => {
             </ul>
             <div className={styles["header-right"]} onClick={hideMenuBar}>
               <span className={styles.links}>
-                {/* {showGreetings ? null : (
-                  <NavLink to="/login" className={activeLink}>
-                    Login
-                  </NavLink>
-                )} */}
                 <ShowOnLogOut>
                   <NavLink to="/login" className={activeLink}>
                     Login
                   </NavLink>
                 </ShowOnLogOut>
 
-                {/* {showGreetings ? (
-                  <NavLink to="/order-history" className={activeLink}>
-                    My Orders
-                  </NavLink>
-                ) : null} */}
-                {/* {showGreetings ? (
-                  <NavLink to="/" onClick={logoutUser}>
-                    Logout
-                  </NavLink>
-                ) : null} */}
                 <ShowOnLogin>
                   <NavLink to="/order-history" className={activeLink}>
                     My Orders

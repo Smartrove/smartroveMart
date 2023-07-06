@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styles from "./checkoutform.module.scss";
 import {
   PaymentElement,
-  LinkAuthenticationElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";

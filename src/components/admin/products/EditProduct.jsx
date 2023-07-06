@@ -1,22 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./product.module.scss";
 import Card from "../../card/Card";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage, db } from "../../../firebase/config";
 import { toast } from "react-toastify";
-import {
-  Timestamp,
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  setDoc,
-} from "firebase/firestore";
+import { Timestamp, doc, setDoc } from "firebase/firestore";
 import Loader from "../../loader/Loader";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -40,8 +28,6 @@ const EditProduct = () => {
   const { id } = useParams();
 
   const { products } = useSelector((store) => store["product"]);
-
-  const productEdit = products.filter((item) => item.id === id);
 
   const [product, setProduct] = useState({
     ...initialState,
@@ -115,11 +101,6 @@ const EditProduct = () => {
 
   const addProductToCollection = async () => {
     try {
-      // if (product.imageUrl !== state.data.imageUrl) {
-      //   const storageRef = ref(storage, state.data.imageUrl);
-
-      //   await deleteObject(storageRef);
-      // }
       const docRef = await setDoc(doc(db, "products", state.data.id), {
         name: nameRef.current.value,
         imageUrl: imageUrlRef.current.value,

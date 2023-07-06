@@ -3,7 +3,7 @@ import styles from "./viewProducts.module.scss";
 import { toast } from "react-toastify";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db, storage } from "../../../firebase/config";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Loader from "../../loader/Loader";

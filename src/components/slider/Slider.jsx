@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./slider.scss";
+import "./slider.scss";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import { sliderData } from "./sliderData";

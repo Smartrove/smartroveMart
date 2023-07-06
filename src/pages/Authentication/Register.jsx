@@ -71,7 +71,6 @@ const Register = () => {
       .catch((error) => {
         toast.error(error.message);
         setIsLoading(false);
-        // ..
       });
   };
 
@@ -87,9 +86,7 @@ const Register = () => {
         navigate("/");
       })
       .catch((error) => {
-        const errorCode = error.code;
-        errorCode = "invalid credentials";
-        toast.error(errorCode);
+        toast.error({ error: "invalid credentials" });
         const credential = GoogleAuthProvider.credentialFromError(error);
       });
   };

@@ -1,5 +1,4 @@
 import { doc, getDoc } from "firebase/firestore";
-import React from "react";
 import { db } from "../firebase/config";
 import { toast } from "react-toastify";
 import { useState } from "react";

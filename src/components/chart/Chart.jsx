@@ -26,8 +26,40 @@ ChartJS.register(
   Legend
 );
 
+const plugins = [
+  {
+    beforeDraw: function (chart) {
+      const ctx = chart.ctx;
+      const canvas = chart.canvas;
+      const chartArea = chart.chartArea;
+
+      // Chart background
+      var gradientBack = canvas
+        .getContext("2d")
+        .createLinearGradient(0, 250, 0, 0);
+      gradientBack.addColorStop(0, "rgba(213,235,248,1)");
+      gradientBack.addColorStop(0.16, "rgba(213,235,248,1)");
+      gradientBack.addColorStop(0.17, "rgba(226,245,234,1)");
+      gradientBack.addColorStop(0.25, "rgba(226,245,234,1)");
+      gradientBack.addColorStop(0.26, "rgba(252,244,219,1)");
+      gradientBack.addColorStop(0.5, "rgba(252,244,219,1)");
+      gradientBack.addColorStop(0.51, "rgba(251,221,221,1)");
+      gradientBack.addColorStop(1, "rgba(251,221,221,1)");
+
+      ctx.fillStyle = gradientBack;
+      ctx.fillRect(
+        chartArea.left,
+        chartArea.bottom,
+        chartArea.right - chartArea.left,
+        chartArea.top - chartArea.bottom
+      );
+    },
+  },
+];
+
 export const options = {
   responsive: true,
+  tension: 0.4,
   plugins: {
     legend: {
       position: "top",
@@ -90,13 +122,14 @@ const Chart = () => {
     datasets: [
       {
         label: "Order counts",
-        data: [placed, processing, delivered, shipped],
+        data: [placed, processing, shipped, delivered],
         borderColor: "rgb(255, 99, 132)",
+        fill: true,
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
     ],
   };
-  return <Line options={options} data={data} />;
+  return <Line options={options} data={data} plugins={plugins} />;
 };
 
 export default Chart;
