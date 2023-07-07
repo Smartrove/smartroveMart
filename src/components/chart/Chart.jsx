@@ -1,12 +1,30 @@
 import React from "react";
-// import styles from "./chart.module.scss";
+import styles from "./chart.module.scss";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { Line } from "react-chartjs-2";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
-
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const plugins = [
   {
