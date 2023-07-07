@@ -17,6 +17,7 @@ const useFetchCollection = (collectionName) => {
         id: doc.id,
         ...doc.data(),
       }));
+
       setData(allData);
       setIsLoading(false);
     } catch (error) {
@@ -29,6 +30,7 @@ const useFetchCollection = (collectionName) => {
     getProductsCollection();
   }, []);
   return { data, isLoading, setIsLoading };
+
 };
 
 export default useFetchCollection;

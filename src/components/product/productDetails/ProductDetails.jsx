@@ -118,11 +118,11 @@ const ProductDetails = () => {
               <>
                 {filteredReview &&
                   filteredReview?.map((item, index) => {
-                    const { id, rate, review, reviewDate, userName } = item;
+                    const { rate, review, reviewDate, userName, email } = item;
 
                     return (
                       <>
-                        <div className={styles.review} key={id}>
+                        <div className={styles.review} key={index}>
                           <StarsRating value={rate} />
                           <p>{review}</p>
                           <span style={{ fontWeight: "500" }}>
@@ -130,7 +130,7 @@ const ProductDetails = () => {
                           </span>
                           <br />
                           <span style={{ fontWeight: "500" }}>
-                            by: {userName}
+                            by: {userName === null ? email : userName}
                           </span>
                         </div>
                       </>

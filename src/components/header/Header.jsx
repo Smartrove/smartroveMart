@@ -22,7 +22,7 @@ const headerLogo = (
   <div className={styles.logo}>
     <Link to="/">
       <h2>
-        Smartrove <span>Hub...</span>
+        Shop <span>Swift...</span>
       </h2>
     </Link>
   </div>

@@ -8,32 +8,20 @@ import Card from "../card/Card";
 import { db } from "../../firebase/config";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { toast } from "react-toastify";
-// import useFetchDoc from "../../customHooks/useFetchDoc";
-// import { useEffect } from "react";
 import spinner from "../../assets/spinner.jpg";
 
 const ProductReview = () => {
   const [rate, setRate] = useState(0);
   const [review, setReview] = useState("");
-  // const [product, setProduct] = useState(null);
 
   const { id } = useParams();
-  const { userId, userName } = useSelector((store) => store["auth"]);
+  const { userId, userName, email } = useSelector((store) => store["auth"]);
   const { products } = useSelector((store) => store["product"]);
 
   const product = products.filter((item) => item.id === id);
 
   const [{ name, imageUrl }] = product;
-  // const { document } = useFetchDoc({
-  //   collectionName: "products",
-  //   documentId: id,
-  // });
 
-  // console.log(document);
-
-  // useEffect(() => {
-  //   setProduct(document);
-  // }, [document]);
   const submitReview = async (e) => {
     e.preventDefault();
     const orderDate = new Date();
@@ -41,6 +29,7 @@ const ProductReview = () => {
     const reviewConfig = {
       userId,
       userName,
+      email,
       id,
       rate,
       review,
@@ -61,7 +50,7 @@ const ProductReview = () => {
     <section>
       <div className={`container ${styles.review}`}>
         {product === null ? (
-          <img src={spinner} alt={name} className="--center-all" />
+          <img src={spinner} alt="spinner" className="--center-all" />
         ) : (
           <>
             <h4>Rate this product</h4>
