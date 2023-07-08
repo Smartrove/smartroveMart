@@ -122,6 +122,7 @@ const AddProduct = () => {
   useEffect(() => {
     if (uploadComplete) {
       addProductToCollection();
+      setIsLoading(false);
       toast.success("product updated successfully");
       navigate("/admin/all-products");
     }

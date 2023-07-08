@@ -11,6 +11,7 @@ import { storeProducts } from "../../../redux/features/productSlice";
 import { useMemo } from "react";
 import Chart from "../../chart/Chart";
 
+
 //icons
 const earningIcon = (
   <MonetizationOnIcon style={{ fontSize: "28px", color: "#b624ff" }} />
@@ -72,7 +73,6 @@ const Home = () => {
           icon={orderIcon}
         />
       </div>
-
       <Chart />
     </div>
   );

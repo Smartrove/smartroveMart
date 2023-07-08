@@ -29,7 +29,7 @@ const useFetchDoc = ({ collectionName, documentId }) => {
 
   useEffect(() => {
     getDocument();
-  }, [collectionName, documentId]);
+  }, [collectionName, documentId, getDocument]);
 
   return { document: fetchedDocument };
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./chart.module.scss";
+import "./chart.module.scss";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -129,7 +129,12 @@ const Chart = () => {
       },
     ],
   };
-  return <Line options={options} data={data} plugins={plugins} />;
+  return (
+    <>
+      {isLoading && <p>Loading...</p>}
+      <Line options={options} data={data} plugins={plugins} />
+    </>
+  );
 };
 
 export default Chart;
