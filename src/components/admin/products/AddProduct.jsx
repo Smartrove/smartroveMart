@@ -30,7 +30,7 @@ const AddProduct = () => {
   const { products } = useSelector((store) => store["product"]);
 
   const productEdit = products.filter((item) => item.id === id);
-  // console.log(productEdit, typeof productEdit);
+  console.log(productEdit, typeof productEdit);
 
   const [product, setProduct] = useState(() => {
     const newState = detectForm(id, { ...initialState }, productEdit);

@@ -17,7 +17,7 @@ const ProductList = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(9);
+  const [productsPerPage, setProductsPerPage] = useState(30);
   const { data } = useFetchCollection("products");
 
   const { filteredProduct } = useSelector((store) => store["filter"]);
