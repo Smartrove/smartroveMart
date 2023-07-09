@@ -37,6 +37,7 @@ const ProductItem = ({ grid, item, id, name, price, desc, imageUrl }) => {
           <h4>{shortenText(name, 18)}</h4>
         </div>
         {!grid && <p className={styles.desc}>{shortenText(desc, 200)}</p>}
+
         <button
           className="--btn --btn-danger"
           onClick={() => handleAddToCart(item)}

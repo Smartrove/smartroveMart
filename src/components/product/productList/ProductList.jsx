@@ -19,6 +19,8 @@ const ProductList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(30);
   const { data } = useFetchCollection("products");
+  const { data: reviewData } = useFetchCollection("reviews");
+  const productId = reviewData.map((review) => review.productId);
 
   const { filteredProduct } = useSelector((store) => store["filter"]);
 

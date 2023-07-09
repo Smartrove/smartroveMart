@@ -19,6 +19,7 @@ const ProductReview = () => {
   const { products } = useSelector((store) => store["product"]);
 
   const product = products.filter((item) => item.id === id);
+  // console.log(brand);
 
   const [{ name, imageUrl }] = product;
 
@@ -30,7 +31,7 @@ const ProductReview = () => {
       userId,
       userName,
       email,
-      id,
+      productId: id,
       rate,
       review,
       reviewDate: date,
