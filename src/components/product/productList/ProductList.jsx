@@ -16,7 +16,7 @@ const ProductList = ({ data }) => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(2);
+  const [productsPerPage, setProductsPerPage] = useState(10);
 
   //get current products
   const indexOfLastProduct = currentPage * productsPerPage;

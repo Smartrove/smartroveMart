@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export const AdminOnlyRoute = ({ children }) => {
   const { email } = useSelector((store) => store["auth"]);
-  if (email === "olaokunolalekan@gmail.com") {
+  if (email === "iamsmartrove@gmail.com") {
     return children;
   }
   return (
