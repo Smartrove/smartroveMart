@@ -17,16 +17,12 @@ const ProductList = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
-<<<<<<< HEAD
-  const [productsPerPage, setProductsPerPage] = useState(10);
-=======
   const [productsPerPage, setProductsPerPage] = useState(30);
   const { data } = useFetchCollection("products");
   const { data: reviewData } = useFetchCollection("reviews");
   const productId = reviewData.map((review) => review.productId);
 
   const { filteredProduct } = useSelector((store) => store["filter"]);
->>>>>>> 6ef47912bf78812b054c481d2dc1a64f517a5a70
 
   //get current products
   const indexOfLastProduct = currentPage * productsPerPage;
