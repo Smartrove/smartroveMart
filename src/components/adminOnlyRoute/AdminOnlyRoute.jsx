@@ -4,15 +4,15 @@ import { Link } from "react-router-dom";
 
 export const AdminOnlyRoute = ({ children }) => {
   const { email } = useSelector((store) => store["auth"]);
-  if (email === "iamsmartrove@gmail.com") {
+  if (email === process.env.REACT_APP_ADMIN) {
     return children;
   }
   return (
-    <section style={{height: '80vh'}}>
+    <section style={{ height: "80vh" }}>
       <div className="container">
         <h2>Permission Denied</h2>
         <p>This page can only be viewed by an admin</p>
-        <Link to='/'>
+        <Link to="/">
           <button className="--btn">&larr; Back to Home</button>
         </Link>
       </div>
@@ -22,12 +22,11 @@ export const AdminOnlyRoute = ({ children }) => {
 
 export const AdminOnlyLink = ({ children }) => {
   const { email } = useSelector((store) => store["auth"]);
-  if (email === "olaokunolalekan@gmail.com") {
+  if (email === process.env.REACT_APP_ADMIN) {
     return children;
   }
 
   return null;
- 
 };
 
 

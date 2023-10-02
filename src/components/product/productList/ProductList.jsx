@@ -10,22 +10,34 @@ import {
   sortProducts,
 } from "../../../redux/features/filterSlice";
 import Pagination from "../../pagination/Pagination";
+import useFetchCollection from "../../../customHooks/useFetchCollection";
 
-const ProductList = ({ data }) => {
+const ProductList = () => {
   const [grid, setGrid] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
+<<<<<<< HEAD
   const [productsPerPage, setProductsPerPage] = useState(10);
+=======
+  const [productsPerPage, setProductsPerPage] = useState(30);
+  const { data } = useFetchCollection("products");
+  const { data: reviewData } = useFetchCollection("reviews");
+  const productId = reviewData.map((review) => review.productId);
+
+  const { filteredProduct } = useSelector((store) => store["filter"]);
+>>>>>>> 6ef47912bf78812b054c481d2dc1a64f517a5a70
 
   //get current products
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
-  const currentProducts = data.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProduct.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const dispatch = useDispatch();
-  const { filteredProduct } = useSelector((store) => store["filter"]);
 
   useEffect(() => {
     dispatch(
@@ -34,9 +46,9 @@ const ProductList = ({ data }) => {
         search,
       })
     );
-  }, [data, search, dispatch]);
+  }, [search, dispatch]);
+
   useEffect(() => {
-    // console.log(sort);
     dispatch(
       sortProducts({
         data,
@@ -44,6 +56,7 @@ const ProductList = ({ data }) => {
       })
     );
   }, [data, sort, dispatch]);
+
   return (
     <div className={styles["product-list"]} id="product">
       <div className={styles.top}>
@@ -59,7 +72,7 @@ const ProductList = ({ data }) => {
           />
 
           <p>
-            <b>{filteredProduct.length}</b> products found
+            <b>{currentProducts.length}</b> products found
           </p>
         </div>
 
@@ -82,18 +95,15 @@ const ProductList = ({ data }) => {
         </div>
       </div>
       <div className={grid ? `${styles.grid}` : `${styles.list}`}>
-        {filteredProduct.length === 0 ? (
+        {currentProducts.length === 0 ? (
           <h2>No product found</h2>
         ) : (
           <>
-            {currentProducts &&
-              currentProducts?.map((item, index) => {
-                return (
-                  <div key={item.id}>
-                    <ProductItem {...item} grid={grid} item={item} />
-                  </div>
-                );
-              })}
+            {currentProducts.map((item, index) => (
+              <div key={item.id}>
+                <ProductItem {...item} grid={grid} item={item} />
+              </div>
+            ))}
           </>
         )}
       </div>

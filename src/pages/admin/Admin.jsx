@@ -2,13 +2,14 @@ import React from "react";
 import styles from "./admin.module.scss";
 import AdminNavBar from '../../components/admin/navbar/AdminNavBar'
 import { Route, Routes } from "react-router-dom";
-import { Home } from "..";
 import {
   AddProduct,
   ViewProducts,
   Orders,
   EditProduct,
+  Home,
 } from "../../components";
+import OrderDetails from "../../components/admin/orderDetails/OrderDetails";
 
 const Admin = () => {
   return (
@@ -23,6 +24,7 @@ const Admin = () => {
           <Route path="/add-product/:id" element={<AddProduct />} />
           <Route path="/edit-product" element={<EditProduct />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/order-details/:id" element={<OrderDetails />} />
         </Routes>
       </div>
     </div>
